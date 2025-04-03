@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flight-Deck | Your all in one place for all our packages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: url("image/flightdeck.svg") no-repeat center center;
+        background-size: cover;
+        position: relative;
+        font-family: "Inter", sans-serif;
+      }
+
+      .overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 99999;
+        display: none;
+      }
+
+      .overlay.show {
+        display: block;
+      }
+
+
+      .modal-container {
+        position: fixed;
+        padding: 60px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 100001;
+        display: none;
+      }
+
+      .modal-container.show {
+        display: block;
+      }
+
+      .modal-content {
+        background: #fff;
+        color: black;
+        padding: 40px;
+        border-radius: 12px;
+        width: 633px;
+        font-size: 14px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.482);
+        transform: scale(0.9);
+        opacity: 0;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        position: relative;
+      }
+
+      .modal-content.show {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .modal-title {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .modal-description {
+        font-size: 18px;
+        color: #333;
+        line-height: 1.5;
+      }
+
+      .modal-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+      }
+
+      .modal-buttons a {
+        background-color: #04187c;
+        border: none;
+        padding: 8px 26px;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 40px;
+        right: 40px;
+        font-size: 18px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #ff0000;
+      }
+
+      /* DESKTOP OPTIMIZE */
+      @media (min-width: 1440px) {
+        /* eFLITE */
+        #screen_1 {
+          top: 57%;
+          left: 21.1%;
+          width: 6vw;
+          height: 10vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+         /* eSCHEDS */
+        #screen_2 {
+          top: 56.8%;
+          left: 30%;
+          width: 6vw;
+          height: 10vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+         /* eTEND-S */
+        #screen_3 {
+          top: 66%;
+          left: 57.8%;
+          width: 6vw;
+          height: 10vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+         /* erep */
+        #screen_4 {
+          top: 66.2%;
+          left: 40%;
+          width: 6vw;
+          height: 10vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+         /* eVENT */
+        #screen_5 {
+          top: 50.2%;
+          left: 40%;
+          width: 6vw;
+          height: 10vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+         /* eREV */
+        #screen_6 {
+          top: 50%;
+          left: 57.4%;
+          width: 6vw;
+          height: 10vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+         /* eSMS */
+        #screen_7 {
+          top: 58.5%;
+          left: 48.8%;
+          width: 6vw;
+          height: 10vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+         /* eQUAL */
+        #screen_8 {
+          top: 57%;
+          left: 67%;
+          width: 7%;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+         /* eCLIPSE */
+        #screen_9 {
+          top: 57.1%;
+          left: 76.4%;
+          width: 6vw;
+          height: 10vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="overlay" id="modal-overlay"></div>
+    <div class="overlay-nice">
+      <div
+        id="announcement"
+        class="announcement rounded-md flex justify-center items-center p-6 transform -translate-y-full opacity-0 transition-all duration-700 ease-in-out"
+      >
+        <span
+          class="rounded-lg bg-[#091349] px-10 py-3 text-sm font-medium text-white shadow-md outline outline-1 outline-[#0b1654]"
+        >
+          Welcome to Flight Deck
+          <a
+            href="https://www.litsonandassociates.com/"
+            class="text-gray-200 font-medium hover:underline"
+          >
+            Go Home
+          </a>
+        </span>
+      </div>
+    </div>
+
+    <div id="screens-container"></div>
+
+    <div id="modal-container" class="modal-container">
+      <div id="modal-content" class="modal-content"></div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        setTimeout(() => {
+          document
+            .getElementById("announcement")
+            .classList.remove("-translate-y-full", "opacity-0");
+        }, 200);
+
+        const screenData = {
+          screens: [
+            {
+              id: arguments.length,	
+              name: "eFLITE-S",
+              subHeading: "Aviation Management Planning System",
+              image: "image/eFLITE-S tr white  (1).svg",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "https://eflite.etools-s.com/index.php",
+              description:
+                "Allows the user of an air service provider to have direct and real-time access to information relating to any services provided by the service provider.",
+              features: [
+                "Aircrew information, license, and training currencies",
+                "Tracking aircraft operator approvals",
+                "Recommending, endorsing, and approving AMPs",
+                "Alerts for validity of currencies, approvals, and certification",
+              ],
+            },
+            {
+              id: arguments.length,	
+              name: "eSCHED-S",
+              subHeading: "Scheduled Airline Assessment System",
+              image: "image/eSCHED-S tr.png",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "https://esched.etools-s.com/login",
+              description:
+                "",
+              features: [
+                "This software program provides Clients with direct online access to a list of assessed commercial airlines.",
+                "Assessments undertaken by L&A are compiled from reputable sources including ICAO, the Flight Safety Foundation, and L&A’s eSYSTEMS.",
+                "The eSCHED-S™ program provides three “Tier Levels” of the assessed airlines.",
+                "The program is updated at least monthly, and clients can request additional scheduled airlines to be assessed and included through a simple online request",
+                "Each individual organisation can personalise the system to view only its preferred commercial",
+              ],
+            },
+            {
+              id: arguments.length,	
+              name: "eTEND-S",
+              subHeading: "eTendering Software System",
+              image: "image/eTEND-S tr white .svg",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "https://www.etools-s.com/etender/",
+              description:
+                "",
+              features: [
+                "Issue Invitations to Tender (ITT) on behalf of a client or by the client itself",
+                "Receive bids in a discrete and confidential platform.",
+                "Align all responses to a specific requirement without allowing misleading cross-pollination between requirements or inaccurate representation.",
+                "Allow bidders to provide focused responses to Tender requirements",
+                "Provide a literal filter between requirements and responses from multiple bidders",
+                "Securely evaluate and assess bids with transparency to the ITT Holder only.",
+                "Provide an objective result with relative scoring and ranking.",
+              ],
+            },
+            {
+              id: arguments.length,	
+              name: "eREP-S",
+              subHeading: "Auditing & Report Writing System",
+              image: "image/eREP-S.svg",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "https://www.erep-s.com/",
+              description:
+                "",
+              features: [
+                "The database includes bespoke Master checklists created by the User",
+                "Findings are classified in 3 priority levels, critical, moderate and low. The auditee responds to Findings & Recommendations.",
+                "The Auditor can correspond/communicate with the auditee through individual reports in eREP-S®",
+                "A risk matrix is provided for each Report",
+              ],
+            },
+            {
+              id: arguments.length,	
+              name: "eVENT-S",
+              subHeading: "Aircraft Occurrence Recording Database",
+              image: "image/eVENT-S tr wh.png",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "#",
+              description:
+                "",
+              features: [
+                "The database consists of more than 8,700 recorded occurrences",
+                "The database covers turbine-powered and selected piston-powered fixed-wing and rotary-wing aircraft types used in commercial aviation.",
+                "This database provides statistical and factual information.",
+                "The system enables filtered searches for date, location, operator, event type, aircraft, and flight type.",
+                "The database covers occurrences from 2019 to 2025, with some older incidents and accidents also included.",
+                "The database is updated weekly and is a concurrent",
+              ],
+            },
+            {
+              id: arguments.length,
+              name: "eREVIEW-S",
+              subHeading: "Virtual Safety Review Hosting System",
+              image: "image/eREVIEW circle.svg",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "#",
+              description:
+                "",
+              features: [
+                "Used by the aircraft operator to remotely assess each auditing question and respond by providing supporting evidence of documentation and implementation.",
+                "Documented evidence, photographs, and video clips can be uploaded in response to questions and supporting implementation records.",
+                "This information forms the basis for compiling any oversight report, whether conducted remotely or on-site.",
+                "The system allows the client to view and monitor all auditing/oversight activities as an observer throughout the process.",
+                "Records all information provided",
+              ],
+            },
+            {
+              id: arguments.length,
+              name: "eSMS-S",
+              subHeading: "Aviation Safety Management System",
+              image: "image/eSMS-S (1).svg",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "https://app.esms-s.com/login",
+              description:
+                "",
+              features: [
+                "Fully compliant with ICAO 9859 SMS specification, including all 4 pillars and 12 elements",
+                "Simple to use, comprehensive Aviation Safety Management System",
+                "The System is used by many scheduled and non-scheduled aircraft, drone operators and MROs worldwide",
+                "Create Hazard, Occurrence, and OHSE Reports with ease",
+                "Advanced Risk Management processing and monitoring",
+                "Management of Change (MOC) Process / Safety Cases ",
+                "Tracking of Training and Asset Currencies",
+                "Document Explorer, Safety & Quality Auditing",
+                "Emergency Response Management, Exercise Planning and actual Emergency / Crisis management",
+                "Yellow and Red tag messaging",
+              ],
+            },
+            {
+              id: arguments.length,
+              name: "eQUAL-S",
+              subHeading: "Safety & Quality Operational Management System",
+              image: "image/eQUAL-S wh.svg",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "#",
+              description:
+                "",
+              features: [
+                "In-house and remote oversight auditing and oversight functions based on Aerospace and related industry standards.",
+                "Comprehensive auditing/inspection report with automated analysis and closure of findings.",
+                "Aerospace standards referenced: IOGP, BARS, ICAO, ISO 9000, AS9100D:2016, AS9110C:2016, AS9120B:2016, National Regulatory Requirements, Technical Standards, Organisational Specifications, and Policies.",
+                "Identification of anomalies through risk assessment to closure of all audit findings, based on a proven remote/virtual concept.",
+                "Ideal for internal and external auditing and oversight functions.",
+                "Excellent management assurance tool.",
+              ],
+            },
+            {
+              id: arguments.length,
+              name: "eCLIPSE-S",
+              subHeading: "Unmanned Aerial Vehicle (UAV) Operational Management Software System",
+              image: "image/eCLIPSE-S tr (1).png",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "#",
+              description:
+                "",
+              features: [
+                "Safety & Quality Organisational Management System developed to optimise operational efficiency and includes Operational and Flight Planning",
+                "Risk Management and event tracking",
+                "Crew and technical management, including training and experience tracking",
+                "Platform Airworthiness and Integrity monitoring.",
+                "Comprehensive Maintenance Management, tracking and recording.",
+                "Data to Information management.",
+              ],
+            },
+          ],
+        };
+
+        const screensContainer = document.getElementById("screens-container");
+        const modalContainer = document.getElementById("modal-container");
+        const modalContentDiv = document.getElementById("modal-content");
+        const modalOverlay = document.getElementById("modal-overlay");
+        let openModal = null; // Track the currently open modal
+
+        screenData.screens.forEach((screen, index) => {
+          const screenDiv = document.createElement("div");
+          screenDiv.classList.add("blackout");
+          screenDiv.id = `screen_${index + 1}`;
+          screenDiv.style.background = `url('${screen.image}') no-repeat center center`;
+
+          screenDiv.addEventListener("click", () => {
+            if (openModal === null) {
+              openModal = modalContainer;
+              var requestADemo =
+                "https://www.litsonandassociates.com/contact/esystems-contact/";
+              modalContentDiv.innerHTML = `
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <div class="modal-header modal-title">
+                  <h2>${screen.name}</h2>
+                  <span class="text-sm text-gray-400">Systems Development</span>
+                </div>
+
+                <div class="modal-subheading text-lg font-semibold">${screen.subHeading}</div>
+                <div class="modal-features modal-description">
+                  
+                  <ul class="list-disc pl-5">
+                    ${screen.features
+                      .map((feature) => `<li>${feature}</li>`)
+                      .join("")}
+                  </ul>
+                </div>
+        
+                <div class="modal-buttons">
+                  <a href="${screen.homeRedirect}" target="_blank" rel="noopener noreferrer">Login to ${screen.name}</a>
+                  <a href="${requestADemo}" target="_blank" rel="noopener noreferrer" class="reqdemo bg-gray-300 hover:bg-gray-400">Request for demonstration</a>
+                </div>
+              `;
+              modalContainer.classList.add("show");
+              modalOverlay.classList.add("show");
+              setTimeout(() => modalContentDiv.classList.add("show"), 10);
+            }
+          });
+
+          screensContainer.appendChild(screenDiv);
+        });
+
+        // Function to close the currently open modal
+        window.closeModal = function () {
+          if (openModal) {
+            modalContentDiv.classList.remove("show");
+            modalOverlay.classList.remove("show");
+            setTimeout(() => {
+              modalContainer.classList.remove("show");
+              modalContentDiv.innerHTML = ""; // Clear modal content
+              openModal = null;
+            }, 300);
+          }
+        };
+
+        // Close modal when clicking outside
+        modalOverlay.addEventListener("click", closeModal);
+
+        // Prevent clicks inside the modal from closing it
+        modalContainer.addEventListener("click", function (event) {
+          event.stopPropagation();
+        });
+      });
+    </script>
+  </body>
+</html>
