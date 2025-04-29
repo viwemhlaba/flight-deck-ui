@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logged Out - Flight-Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f3f4f6; /* Tailwind gray-100 */
+            font-family: sans-serif; /* Basic font */
+        }
+        .logout-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="logout-container">
+        <h1 class="text-2xl font-semibold mb-4">You have been successfully logged out.</h1>
+        <p class="mb-6">Thank you for using Flight-Deck.</p>
+        <a href="/login.html" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out">
+            Log In Again
+        </a>
+    </div>
+    <script>
+        // Optional: Clear storage again as a fallback, though it should be cleared before redirecting here.
+        localStorage.removeItem('loggedInUser');
+        sessionStorage.removeItem('loggedInUser'); // If you ever use sessionStorage
+    </script>
+</body>
+</html>

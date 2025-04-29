@@ -1,0 +1,692 @@
+/* style.css */
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap");
+
+/* ==========================================================================
+   Root Variables
+   ========================================================================== */
+:root {
+  /* Z-index variables for better management */
+  --z-index-base: 1;
+  --z-index-content: 10;
+  --z-index-screen-hover: 11; /* For screen hover effect */
+  --z-index-modal-backdrop: 1000;
+  --z-index-modal: 1001;
+  --z-index-toast: 2000;
+  --z-index-swal: 3000;
+  --z-index-swal-list: 3001; /* For the list modal */
+
+  /* Potential Color Variables (Optional - uncomment and use if desired) */
+  /* --color-primary: #04187c; */
+  /* --color-primary-hover: #0a2ca5; */
+  /* --color-danger: #dc2626; */
+  /* --color-warning: #d97706; */
+  /* --color-safe: #059669; */
+}
+
+/* ==========================================================================
+   Base Styles & Body Background
+   ========================================================================== */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* Prevents horizontal scroll */
+  position: relative;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  /* Use the primary background for pages linking this stylesheet */
+  background: url("/Assets/image/mainBackground.svg") no-repeat center center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+/* ==========================================================================
+   Screen Elements (Clickable areas on background)
+   ========================================================================== */
+.screen-element {
+  position: absolute; /* Changed from relative for positioning */
+  background-size: contain; /* Removed - using img tag now */
+  background-repeat: no-repeat; /* Removed */
+  background-position: center center; /* Removed */
+  z-index: var(--z-index-content);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; /* Added transitions */
+  /* Added styles for card appearance */
+}
+
+.screen-element:hover {
+  transform: translateY(-5px) scale(1.05); /* Lift and scale effect */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: var(--z-index-screen-hover); /* Ensure hover is above siblings */
+  /* filter: brightness(1.2); */ /* Removed filter, rely on shadow/transform */
+}
+
+/* Notification badge on screen elements */
+.notification-badge {
+  position: absolute; /* Absolute positioning within screen element */
+  top: 8px; /* Adjusted position */
+  right: 8px; /* Adjusted position */
+  background-color: #dc2626; /* Red-600 */
+  color: white;
+  font-size: 10px; /* Slightly smaller */
+  font-weight: 600;
+  padding: 2px 6px; /* Adjusted padding */
+  border-radius: 9999px;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8); /* Adjusted shadow */
+  z-index: calc(var(--z-index-content) + 1); /* Above screen element */
+  pointer-events: none; /* Don't interfere with clicks */
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    transform: scale(1.15); /* Slightly larger pulse */
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.4);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* ==========================================================================
+   Modal Styles
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: var(--z-index-modal-backdrop);
+  opacity: 0;
+  /* visibility: hidden; */ /* Controlled by display now */
+  /* transition: opacity 0.4s ease, visibility 0.4s ease; */ /* Handled by GSAP */
+  backdrop-filter: blur(3px);
+  display: none; /* Use display none/block */
+}
+
+/* .modal-overlay.show { */ /* Not needed with GSAP controlling opacity/display */
+  /* opacity: 1; */
+  /* visibility: visible; */
+/* } */
+
+.modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Handled by GSAP */
+  z-index: var(--z-index-modal);
+  /* visibility: hidden; */ /* Controlled by display */
+  width: 90%; /* Responsive width */
+  max-width: 650px; /* Max width */
+  display: none; /* Use display none/block */
+  max-height: 90vh; /* Limit height */
+  overflow-y: auto; /* Allow scrolling within modal */
+  border-radius: 8px; /* Apply rounding here */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Apply shadow here */
+}
+
+/* .modal-container.show { */ /* Not needed with GSAP */
+  /* visibility: visible; */
+/* } */
+
+.modal-content { /* This is the inner div with ID modal-content */
+  background: #fff;
+  color: black;
+  padding: 25px 30px; /* Adjusted padding */
+  border-radius: 8px; /* Keep rounding if needed, but container has it */
+  font-size: 14px;
+  /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); */ /* Moved to container */
+  /* transform: scale(0.8) translateY(-30px); */ /* Handled by GSAP */
+  /* opacity: 0; */ /* Handled by GSAP */
+  /* transition: opacity 0.5s ease, */
+    /* transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); */ /* Handled by GSAP */
+  position: relative; /* For close button positioning */
+}
+
+/* .modal-content.show { */ /* Not needed with GSAP */
+  /* opacity: 1; */
+  /* transform: scale(1) translateY(0); */
+/* } */
+
+/* --- Styles for elements INSIDE #modal-content --- */
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.modal-image {
+    max-width: 150px; /* Adjust size */
+    height: auto;
+    margin-bottom: 15px;
+    border-radius: 4px; /* Slight rounding */
+}
+
+.modal-header h2 { /* Renamed from .modal-title */
+    margin: 5px 0;
+    font-size: 1.6em; /* Adjust size */
+    color: #333;
+    font-weight: 600; /* Adjusted weight */
+}
+
+.modal-subheading {
+    font-size: 1em; /* Adjusted size */
+    color: #666;
+    margin-bottom: 10px;
+    font-weight: 400; /* Adjusted weight */
+}
+
+/* .modal-description { */ /* Removed, using specific sections */
+  /* font-size: 15px; */
+  /* color: #333; */
+  /* line-height: 1.6; */
+  /* margin-bottom: 15px; */
+/* } */
+
+.notification-summary,
+.features-list {
+    margin-bottom: 20px;
+}
+
+.notification-summary h4,
+.features-list h4 {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    color: #444;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 5px;
+    font-weight: 600;
+}
+
+/* .modal-features ul { */ /* Styles moved to .features-list ul */
+  /* list-style: disc; */
+  /* padding-left: 20px; */
+  /* margin-top: 10px; */
+  /* margin-bottom: 15px; */
+/* } */
+
+.features-list ul {
+    list-style: disc;
+    padding-left: 25px;
+    color: #555;
+    font-size: 0.95em;
+}
+
+.features-list li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+
+/* Notification type indicators within modal */
+.notification-types span {
+  display: inline-flex; /* Use inline-flex */
+  align-items: center;
+  gap: 0.35rem; /* 6px */
+  margin: 3px 5px 3px 0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  cursor: pointer; /* Indicate clickable */
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  border: 1px solid transparent; /* Base border */
+}
+
+.notification-types span:hover {
+  transform: translateY(-1px);
+  opacity: 0.85; /* Slight fade on hover */
+}
+
+/* Specific styles for notification types */
+.notification-types .type-warning { background-color: #fffbeb; color: #b45309; border-color: #fef3c7;} /* yellow */
+.notification-types .type-danger { background-color: #fee2e2; color: #991b1b; border-color: #fecaca;} /* red */
+.notification-types .type-safe,
+.notification-types .type-success { background-color: #ecfdf5; color: #065f46; border-color: #a7f3d0;} /* green */
+.notification-types .type-info { background-color: #eff6ff; color: #1d4ed8; border-color: #bfdbfe;} /* blue */
+
+
+/* Modal Buttons / Actions */
+.modal-actions { /* Renamed from .modal-buttons */
+  display: flex; /* Use flexbox */
+  flex-wrap: wrap; /* Allow wrapping */
+  gap: 10px; /* Space between buttons */
+  justify-content: flex-end; /* Align buttons to the right */
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.modal-button { /* New class for individual buttons */
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+    /* margin-left: 10px; */ /* Use gap in .modal-actions */
+    font-size: 0.95em;
+    cursor: pointer;
+    border: none; /* Remove default border */
+    text-align: center;
+}
+.modal-button:hover {
+    transform: translateY(-1px);
+}
+.modal-button:active {
+    transform: translateY(0px);
+}
+
+.modal-button.primary {
+    background-color: #091349; /* Your primary color */
+    color: white;
+}
+.modal-button.primary:hover {
+    background-color: #0b1654; /* Darker shade */
+}
+
+.modal-button.secondary {
+    background-color: #e2e8f0; /* Tailwind gray-200 */
+    color: #4a5568; /* Tailwind gray-700 */
+    border: 1px solid #cbd5e1; /* Tailwind gray-300 */
+}
+.modal-button.secondary:hover {
+    background-color: #cbd5e1; /* Tailwind gray-300 */
+}
+
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 10px; /* Adjusted position */
+  right: 15px; /* Adjusted position */
+  background: none;
+  border: none;
+  font-size: 2em; /* Adjusted size */
+  color: #aaa;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 30px; /* Smaller hit area */
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: color 0.2s ease, background-color 0.2s ease; /* Simplified transition */
+}
+
+.close-btn:hover {
+  color: #333;
+  background-color: #f0f0f0; /* Slight background on hover */
+  /* transform: rotate(90deg); */ /* Removed rotation */
+}
+
+/* ==========================================================================
+   Announcements & Toasts
+   ========================================================================== */
+.announcements-container {
+  position: fixed;
+  top: 15px; /* Adjust vertical position */
+  left: 5%; /* Space from the edge */
+  right: 5%; /* Space from the edge */
+  width: 90%; /* Control width */
+  max-width: 1200px; /* Optional: Set a max-width */
+  margin-left: auto; /* Center the container */
+  margin-right: auto; /* Center the container */
+  z-index: var(--z-index-modal); /* Ensure it's above content, below modals */
+  padding: 5px; /* Reduced padding */
+
+}
+
+.announcements-container > div:first-child {
+  display: flex;
+  justify-content: space-between; /* Pushes welcome left, logout right */
+  align-items: center;
+  width: 100%; /* Ensure it takes full width of the container */
+  gap: 1rem; /* Space between elements */
+}
+
+/* Style the welcome message container */
+#announcement-welcome {
+  flex-shrink: 0; /* Prevent welcome message from shrinking */
+}
+
+#announcement-welcome span { /* Target the inner span directly */
+  display: inline-block;
+  border-radius: 0.5rem;
+  background-color: #091349;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  outline: 1px solid #0b1654;
+}
+#announcement-welcome a {
+    color: #e5e7eb; /* text-gray-200 */
+    font-weight: 500; /* font-medium */
+    text-decoration: none;
+}
+#announcement-welcome a:hover {
+    text-decoration: underline;
+}
+
+#logout-button {
+  /* Tailwind classes handle most styling */
+  /* Add margin-left if extra space is needed from the welcome message */
+
+  flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+
+#announcement-board {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: center; /* Center text within the board */
+  flex-shrink: 1; /* Allow board to shrink if needed, but not excessively */
+  min-width: 150px; /* Optional: ensure minimum width */
+}
+
+/* #announcement-board.show { */ /* Not needed with GSAP */
+    /* transform: translateY(0) translateX(-50%); */
+    /* opacity: 1; */
+/* } */
+
+#announcement-board:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Badge inside announcement board */
+#announcement-board .notification-badge {
+  position: static; /* Keep inline */
+  background-color: #ef4444; /* Red-500 */
+  font-size: 10px;
+  padding: 1px 6px;
+  box-shadow: none;
+  animation: none;
+  margin-left: 0; /* Reset margin */
+  color: white;
+  border-radius: 9999px;
+  font-weight: 600;
+}
+
+
+/* Toast notification */
+.toast-container {
+  position: fixed;
+  top: 20px; /* Changed to top-right */
+  right: 20px;
+  bottom: auto; /* Reset bottom */
+  z-index: var(--z-index-toast);
+  display: flex; /* Use flexbox */
+  flex-direction: column; /* Stack toasts vertically */
+  align-items: flex-end; /* Align toasts to the right */
+  gap: 10px; /* Space between toasts */
+}
+
+.toast {
+  background-color: #fff;
+  border-radius: 6px; /* Slightly less rounded */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 12px 16px;
+  /* margin-bottom: 10px; */ /* Use gap in container */
+  /* transform: translateX(110%); */ /* Handled by GSAP */
+  /* opacity: 0; */ /* Handled by GSAP */
+  /* transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), */
+    /* opacity 0.5s ease; */ /* Handled by GSAP */
+  display: flex;
+  align-items: flex-start; /* Align icon to top */
+  gap: 10px;
+  width: 320px; /* Fixed width */
+  max-width: 90vw; /* Ensure it fits on small screens */
+  border-left: 4px solid transparent; /* Space for type color */
+}
+
+/* .toast.show { */ /* Not needed with GSAP */
+  /* transform: translateX(0); */
+  /* opacity: 1; */
+/* } */
+
+.toast-icon {
+  font-size: 18px; /* Adjusted size */
+  padding-top: 2px; /* Align icon better */
+}
+
+.toast-content {
+  flex: 1;
+}
+
+.toast-title {
+  font-weight: 600; /* Bolder */
+  margin-bottom: 3px; /* Reduced margin */
+  font-size: 15px;
+  color: #333;
+}
+.toast-message {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.4;
+}
+
+.toast-close {
+  cursor: pointer;
+  font-size: 20px;
+  color: #aaa;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  padding: 0 0 0 5px; /* Padding on left */
+  line-height: 1; /* Ensure button doesn't affect layout height */
+  align-self: flex-start; /* Align to top */
+}
+.toast-close:hover {
+  color: #333;
+}
+
+/* Toast type colors */
+.toast-info { border-left-color: #3b82f6; } /* blue-500 */
+.toast-success { border-left-color: #10b981; } /* emerald-500 */
+.toast-warning { border-left-color: #f59e0b; } /* amber-500 */
+.toast-danger { border-left-color: #ef4444; } /* red-500 */
+
+
+/* ==========================================================================
+   SweetAlert2 Overrides
+   ========================================================================== */
+.swal2-container {
+  z-index: var(--z-index-swal) !important;
+}
+
+/* Specific z-index for the notification list modal */
+.swal2-popup.swal2-modal-container-list-of-all-notifications { /* Target popup directly */
+  z-index: var(--z-index-swal-list) !important;
+}
+
+/* Add blur to the backdrop ONLY when the notification list modal is shown */
+/* This requires the specific class to be on the .swal2-popup */
+.swal2-container:has(.swal2-popup.swal2-modal-container-list-of-all-notifications) .swal2-backdrop {
+  backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0.6) !important; /* Match custom overlay */
+}
+/* Fallback if :has is not supported (less reliable) */
+/* .swal2-container.swal2-backdrop-show:has(...) might be needed */
+
+
+/* ==========================================================================
+   Screen Element Positions (Requires careful tuning based on background)
+   ========================================================================== */
+
+/* Desktop Breakpoint */
+
+  /* NOTE: These %/vw/vh values are highly dependent on the background image aspect ratio. */
+  /* Consider alternative layout methods if possible, or ensure the background image doesn't change. */
+  /* Using fixed pixel sizes might be more reliable if the background is consistent */
+
+  /* Example using fixed sizes - adjust as needed */
+  #screen_1 { top: 57%; left: 21.1%; width: 6vw; height: 10vh; } /* eFLITE */
+  #screen_2 { top: 56.8%; left: 30%; width: 6vw; height: 10vh; } /* eSCHEDS */
+  #screen_3 { top: 66%; left: 57.8%; width: 6vw; height: 10vh; } /* eTEND-S */
+  #screen_4 { top: 66.2%; left: 40%; width: 6vw; height: 10vh; } /* erep */
+  #screen_5 { top: 50.2%; left: 40%; width: 6vw; height: 10vh; } /* eVENT */
+  #screen_6 { top: 50%; left: 57.4%; width: 6vw; height: 10vh; } /* eREV */
+  #screen_7 { top: 58.5%; left: 48.8%; width: 6vw; height: 10vh; } /* eSMS */
+  #screen_8 { top: 57%; left: 68%; width: 6vw; height: 12vh; } /* eTEND */
+  #screen_9 { top: 57.1%; left: 76.4%; width: 6vw; height: 11vh; } /* eCLIPSE */
+  #screen_10 { top: 42%; left: 48.6%; width: 6vw; height: 12vh; } /* eDOCS */
+
+
+/* Smaller Screens / Tablet Breakpoint */
+@media (max-width: 1023px) {
+  /* Adjust screen positions/sizes for smaller viewports */
+  /* These are examples and need thorough testing */
+  /* Consider using a grid or flexbox layout for screens on smaller devices instead of absolute positioning */
+  
+
+  /* Adjust modal for smaller screens */
+  .modal-container {
+    /* padding: 15px; */ /* Padding inside content */
+    width: 95%; /* Slightly wider on small screens */
+  }
+  .modal-content {
+    padding: 20px;
+  }
+  /* .modal-title { */ /* Use modal-header h2 */
+    /* font-size: 24px; */
+  /* } */
+  .modal-actions { /* Stack buttons vertically */
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch; /* Make buttons full width */
+  }
+  .modal-button {
+    /* min-width: unset; */ /* Not needed when stacked */
+  }
+}
+
+/* Mobile Breakpoint (Optional - Add if specific mobile adjustments are needed) */
+@media (max-width: 767px) {
+    
+    .announcements-container {
+        top: 15px;
+        gap: 8px;
+    }
+    #announcement-welcome span {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+    #announcement-board {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+    .toast-container {
+        top: 15px; right: 15px;
+        width: calc(100% - 30px); /* Make toasts take more width */
+        align-items: stretch; /* Center align */
+    }
+    .toast {
+        width: 100%; /* Full width */
+    }
+}
+
+
+/* === NEW Styles for Disabled Screens and Modal Badge === */
+
+
+/* Style for disabled screen elements in the main grid */
+.screen-element.disabled-screen {
+  /* background-color: #f9fafb; /* Optional: Slightly different background */
+  cursor: pointer; /* Still allow clicking to open modal */
+  opacity: 0.7; /* General dimming */
+}
+
+/* Apply grayscale/opacity to the image *within* the disabled screen element */
+.screen-element.disabled-screen .screen-image {
+  filter: grayscale(90%);
+  opacity: 0.6; /* Dim image further */
+  transition: filter 0.3s ease, opacity 0.3s ease; /* Add transition */
+}
+
+/* Optional: Reduce hover effect intensity for disabled screens */
+.screen-element.disabled-screen:hover {
+  transform: translateY(-3px) scale(1.03); /* Less lift/scale */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08); /* Less shadow */
+  opacity: 0.8; /* Slightly less dim on hover */
+}
+.screen-element.disabled-screen:hover .screen-image {
+  filter: grayscale(70%); /* Slightly less grayscale on hover */
+  opacity: 0.7;
+}
+
+
+/* Style for the "Not Subscribed" badge in the modal */
+.not-subscribed-badge {
+  display: inline-block;
+  background-color: #fffbeb; /* Tailwind yellow-50 */
+  color: #b45309; /* Tailwind yellow-700 */
+  padding: 0.3em 0.8em;
+  border-radius: 0.375rem; /* Tailwind rounded-md */
+  font-size: 0.85em; /* Tailwind text-sm */
+  font-weight: 600; /* Tailwind font-semibold */
+  margin-top: 10px;
+  border: 1px solid #fef3c7; /* Tailwind yellow-200 */
+}
+
+/* Optional: Style for disabled image within the modal */
+.modal-image.disabled-image-modal {
+  filter: grayscale(70%);
+  opacity: 0.65;
+}
+
+/* Ensure body doesn't scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* --- Ensure these styles exist for the structure created in ui.js --- */
+/* Adjust if your structure differs */
+
+
+
+/* Adjust notification badge position if using the new HTML structure */
+/* This badge is now inside the h3 */
+.screen-element .screen-info .notification-badge {
+  position: static; /* No longer absolute */
+  /* Adjust styles if needed - remove top/right/box-shadow */
+  padding: 1px 6px;
+  font-size: 10px;
+  box-shadow: none;
+  animation: none; /* Remove pulse or adjust */
+  /* Add back pulse if desired */
+  /* animation: pulse 2s infinite; */
+  /* Ensure it doesn't have absolute positioning styles */
+  top: auto; right: auto;
+  margin-left: 0; /* Reset margin */
+  background-color: #dc2626; /* Ensure color */
+  color: white; /* Ensure color */
+  border-radius: 9999px;
+  font-weight: 600;
+}

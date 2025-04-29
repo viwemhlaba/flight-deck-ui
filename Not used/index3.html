@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flight-Deck | Your all in one place for all our packages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Added GSAP for smoother animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Added SweetAlert2 for better alerts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.css" rel="stylesheet">
+    <!-- Added AOS for scroll animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap");
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: url("image/flightdeck.svg") no-repeat center center;
+        background-size: cover;
+        position: relative;
+        font-family: "Inter", sans-serif;
+      }
+
+      .blackout {
+        position: relative;
+        transition: transform 0.3s ease, filter 0.3s ease;
+      }
+      
+      .blackout:hover {
+        transform: scale(1.05);
+        filter: brightness(1.2);
+        z-index: 100000;
+      }
+
+      .overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.6);
+        z-index: 99999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.4s ease, visibility 0.4s ease;
+        backdrop-filter: blur(3px);
+      }
+
+      .overlay.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal-container {
+        position: fixed;
+        padding: 60px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 100001;
+        visibility: hidden;
+      }
+
+      .modal-container.show {
+        visibility: visible;
+      }
+
+      .modal-content {
+        background: #fff;
+        color: black;
+        padding: 40px;
+        border-radius: 12px;
+        width: 633px;
+        font-size: 14px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        transform: scale(0.8) translateY(-30px);
+        opacity: 0;
+        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+      }
+
+      .modal-content.show {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+
+      .modal-title {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .modal-description {
+        font-size: 18px;
+        color: #333;
+        line-height: 1.5;
+      }
+
+      .modal-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+      }
+
+      .modal-buttons a {
+        background-color: #04187c;
+        border: none;
+        padding: 8px 26px;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+      
+      .modal-buttons a:hover {
+        background-color: #0a2ca5;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      
+      .modal-buttons a.reqdemo {
+        background-color: #e5e5e5;
+        color: #333;
+      }
+      
+      .modal-buttons a.reqdemo:hover {
+        background-color: #d1d1d1;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 24px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #ff0000;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+      }
+      
+      .close-btn:hover {
+        background-color: rgba(255, 0, 0, 0.1);
+        transform: rotate(90deg);
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -10px;
+        right: 8px;
+        background-color: #dc2626;
+        color: white;
+        font-size: 12px;
+        padding: 2px 6px;
+        border-radius: 9999px;
+        box-shadow: 0 0 0 2px white;
+        z-index: 10;
+        animation: pulse 2s infinite;
+      }
+      
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+
+      .notification-types span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.2rem 0.4rem;
+        border-radius: 0.375rem;
+        transition: all 0.3s ease;
+      }
+      
+      .notification-types span:hover {
+        transform: translateY(-2px);
+      }
+      
+      .notification-types .text-amber-500 {
+        background-color: #f59e0b20;
+        color: #f59e0b;
+        cursor: pointer;
+      }
+      
+      .notification-types .text-red-500 {
+        background-color: #ef444420;
+        color: #ef4444;
+        cursor: pointer;
+      }
+      
+      .notification-types .text-green-500 {
+        background-color: #10b98120;
+        color: #10b981;
+        cursor: pointer;
+      }
+
+      /* Announcement styles */
+      #announcement {
+        transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.7s ease;
+      }
+      
+      #announcement_board {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        backdrop-filter: blur(5px);
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      #announcement_board:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      /* Toast notification */
+      .toast-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 100002;
+      }
+      
+      .toast {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 12px 16px;
+        margin-bottom: 10px;
+        transform: translateX(100%);
+        opacity: 0;
+        transition: transform 0.5s ease, opacity 0.5s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      
+      .toast.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      
+      .toast-icon {
+        font-size: 20px;
+      }
+      
+      .toast-content {
+        flex: 1;
+      }
+      
+      .toast-title {
+        font-weight: bold;
+        margin-bottom: 4px;
+      }
+      
+      .toast-close {
+        cursor: pointer;
+        font-size: 18px;
+      }
+
+      /* DESKTOP OPTIMIZE */
+      @media (min-width: 1440px) {
+        /* eFLITE */
+        #screen_1 {
+          top: 57%;
+          left: 21.1%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eSCHEDS */
+        #screen_2 {
+          top: 56.8%;
+          left: 30%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eTEND-S */
+        #screen_3 {
+          top: 66%;
+          left: 57.8%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* erep */
+        #screen_4 {
+          top: 66.2%;
+          left: 40%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eVENT */
+        #screen_5 {
+          top: 50.2%;
+          left: 40%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eREV */
+        #screen_6 {
+          top: 50%;
+          left: 57.4%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eSMS */
+        #screen_7 {
+          top: 58.5%;
+          left: 48.8%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eQUAL */
+        #screen_8 {
+          top: 57%;
+          left: 67%;
+          width: 7%;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eCLIPSE */
+        #screen_9 {
+          top: 57.1%;
+          left: 76.4%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+      }
+
+      @media (max-width: 1300px) {
+        /* Screen positions for smaller screens... */
+        /* Keeping the same as original for brevity */
+        /* eFLITE */
+        #screen_1 {
+          top: 57%;
+          left: 21.1%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eSCHEDS */
+        #screen_2 {
+          top: 56.8%;
+          left: 30%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eTEND-S */
+        #screen_3 {
+          top: 66%;
+          left: 57.8%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* erep */
+        #screen_4 {
+          top: 66.2%;
+          left: 40%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eVENT */
+        #screen_5 {
+          top: 50.2%;
+          left: 40%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eREV */
+        #screen_6 {
+          top: 50%;
+          left: 57.4%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eSMS */
+        #screen_7 {
+          top: 58.5%;
+          left: 48.8%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eQUAL */
+        #screen_8 {
+          top: 57%;
+          left: 67%;
+          width: 7%;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+        /* eCLIPSE */
+        #screen_9 {
+          top: 57.1%;
+          left: 76.4%;
+          width: 6vw;
+          height: 11vh;
+          position: absolute;
+          background-size: cover !important;
+          z-index: 99999;
+          cursor: pointer;
+          background: url("TR-eSMS.png") no-repeat center center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="overlay" id="modal-overlay"></div>
+    <div class="overlay-nice">
+      <div
+        id="announcement"
+        class="announcement rounded-md flex justify-center items-center p-6 transform -translate-y-full opacity-0 transition-all duration-700 ease-in-out"
+      >
+        <span
+          class="rounded-lg bg-[#091349] px-10 py-3 text-sm font-medium text-white shadow-md outline outline-1 outline-[#0b1654]"
+        >
+          Welcome to Flight Deck
+          <a
+            href="https://www.litsonandassociates.com/"
+            class="text-gray-200 font-medium hover:underline"
+          >
+            Go Home
+          </a>
+        </span>
+      </div>
+      <div
+        id="announcement_board"
+        class="rounded-md flex justify-center items-center p-6 mt-10 transform -translate-y-full opacity-0 transition-all duration-700 ease-in-out"
+      >
+        Important Announcement
+      </div>
+    </div>
+
+    <div id="screens-container"></div>
+
+    <div id="modal-container" class="modal-container">
+      <div id="modal-content" class="modal-content"></div>
+    </div>
+    
+    <!-- Toast notifications container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Initialize AOS
+        AOS.init({
+          duration: 800,
+          easing: 'ease-in-out',
+          once: true
+        });
+        
+        // Show announcement with GSAP
+        gsap.to("#announcement", {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "back.out(1.7)",
+          delay: 0.3
+        });
+        
+        // Show announcement board with GSAP
+        gsap.to("#announcement_board", {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "back.out(1.7)",
+          delay: 0.5
+        });
+        
+        const screenData = {
+          screens: [
+            {
+              id: arguments.length,
+              name: "eFLITE-S",
+              subHeading: "Aviation Management Planning System",
+              image: "image/eFLITE-S tr white  (1).svg",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "https://eflite.etools-s.com/index.php",
+              notificationCount: 23,
+              notificationBreakdown: {
+                warning: 13,
+                danger: 5,
+                safe: 5,
+              },
+              description:
+                "Allows the user of an air service provider to have direct and real-time access to information relating to any services provided by the service provider.",
+              features: [
+                "Aircrew information, license, and training currencies",
+                "Tracking aircraft operator approvals",
+                "Recommending, endorsing, and approving AMPs",
+                "Alerts for validity of currencies, approvals, and certification",
+              ],
+            },
+            {
+              id: arguments.length,
+              name: "eSCHED-S",
+              subHeading: "Scheduled Airline Assessment System",
+              image: "image/eSCHED-S tr.png",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "https://esched.etools-s.com/login",
+              description: "",
+              notificationCount: 12,
+              notificationBreakdown: {
+                warning: 4,
+                danger: 6,
+                safe: 2,
+              },
+              features: [
+                "This software program provides Clients with direct online access to a list of assessed commercial airlines.",
+                "Assessments undertaken by L&A are compiled from reputable sources including ICAO, the Flight Safety Foundation, and L&A's eSYSTEMS.",
+                "The eSCHED-S™ program provides three Tier Levels of the assessed airlines.",
+                "The program is updated at least monthly, and clients can request additional scheduled airlines to be assessed and included through a simple online request",
+                "Each individual organisation can personalise the system to view only its preferred commercial",
+              ],
+            },
+            {
+              id: arguments.length,
+              name: "eTEND-S",
+              subHeading: "eTendering Software System",
+              image: "image/eTEND-S tr white .svg",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "https://www.etools-s.com/etender/",
+              description: "",
+              notificationCount: 45,
+              notificationBreakdown: {
+                warning: 15,
+                danger: 10,
+                safe: 20,
+              },
+              features: [
+                "Issue Invitations to Tender (ITT) on behalf of a client or by the client itself",
+                "Receive bids in a discrete and confidential platform.",
+                "Align all responses to a specific requirement without allowing misleading cross-pollination between requirements or inaccurate representation.",
+                "Allow bidders to provide focused responses to Tender requirements",
+                "Provide a literal filter between requirements and responses from multiple bidders",
+                "Securely evaluate and assess bids with transparency to the ITT Holder only.",
+                "Provide an objective result with relative scoring and ranking.",
+              ],
+            },
+            {
+              id: arguments.length,
+              name: "eREP-S",
+              subHeading: "Auditing & Report Writing System",
+              image: "image/eREP-S.svg",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "https://www.erep-s.com/",
+              description: "",
+              notificationCount: 24,
+              notificationBreakdown: {
+                warning: 12,
+                danger: 8,
+                safe: 4,
+              },
+              features: [
+                "The database includes bespoke Master checklists created by the User",
+                "Findings are classified in 3 priority levels, critical, moderate and low. The auditee responds to Findings & Recommendations.",
+                "The Auditor can correspond/communicate with the auditee through individual reports in eREP-S®",
+                "A risk matrix is provided for each Report",
+              ],
+            },
+            {
+              id: arguments.length,
+              name: "eVENT-S",
+              subHeading: "Aircraft Occurrence Recording Database",
+              image: "image/eVENT-S tr wh.png",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "#",
+              description: "",
+              notificationCount: 36,
+              notificationBreakdown: {
+                warning: 20,
+                danger: 8,
+                safe: 8,
+              },
+              features: [
+                "The database consists of more than 8,700 recorded occurrences",
+                "The database covers turbine-powered and selected piston-powered fixed-wing and rotary-wing aircraft types used in commercial aviation.",
+                "This database provides statistical and factual information.",
+                "The system enables filtered searches for date, location, operator, event type, aircraft, and flight type.",
+                "The database covers occurrences from 2019 to 2025, with some older incidents and accidents also included.",
+                "The database is updated weekly and is a concurrent",
+              ],
+            },
+            {
+              id: arguments.length,
+              name: "eREVIEW-S",
+              subHeading: "Virtual Safety Review Hosting System",
+              image: "image/eREVIEW circle.svg",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "#",
+              description: "",
+              notificationCount: 8,
+              notificationBreakdown: {
+                warning: 4,
+                danger: 2,
+                safe: 2,
+              },
+              features: [
+                "Used by the aircraft operator to remotely assess each auditing question and respond by providing supporting evidence of documentation and implementation.",
+                "Documented evidence, photographs, and video clips can be uploaded in response to questions and supporting implementation records.",
+                "This information forms the basis for compiling any oversight report, whether conducted remotely or on-site.",
+                "The system allows the client to view and monitor all auditing/oversight activities as an observer throughout the process.",
+                "Records all information provided",
+              ],
+            },
+            {
+              id: arguments.length,
+              name: "eSMS-S",
+              subHeading: "Aviation Safety Management System",
+              image: "image/eSMS-S (1).svg",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "https://app.esms-s.com/login",
+              description: "",
+              notificationCount: 19,
+              notificationBreakdown: {
+                warning: 5,
+                danger: 10,
+                safe: 4,
+              },
+              features: [
+                "Fully compliant with ICAO 9859 SMS specification, including all 4 pillars and 12 elements",
+                "Simple to use, comprehensive Aviation Safety Management System",
+                "The System is used by many scheduled and non-scheduled aircraft, drone operators and MROs worldwide",
+                "Create Hazard, Occurrence, and OHSE Reports with ease",
+                "Advanced Risk Management processing and monitoring",
+                "Management of Change (MOC) Process / Safety Cases ",
+                "Tracking of Training and Asset Currencies",
+                "Document Explorer, Safety & Quality Auditing",
+                "Emergency Response Management, Exercise Planning and actual Emergency / Crisis management",
+                "Yellow and Red tag messaging",
+              ],
+            },
+            {
+              id: arguments.length,
+              name: "eQUAL-S",
+              subHeading: "Safety & Quality Operational Management System",
+              image: "image/eQUAL-S wh.svg",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "#",
+              description: "",
+              notificationCount: 8,
+              notificationBreakdown: {
+                warning: 6,
+                danger: 1,
+                safe: 1,
+              },
+              features: [
+                "In-house and remote oversight auditing and oversight functions based on Aerospace and related industry standards.",
+                "Comprehensive auditing/inspection report with automated analysis and closure of findings.",
+                "Aerospace standards referenced: IOGP, BARS, ICAO, ISO 9000, AS9100D:2016, AS9110C:2016, AS9120B:2016, National Regulatory Requirements, Technical Standards, Organisational Specifications, and Policies.",
+                "Identification of anomalies through risk assessment to closure of all audit findings, based on a proven remote/virtual concept.",
+                "Ideal for internal and external auditing and oversight functions.",
+                "Excellent management assurance tool.",
+              ],
+            },
+            {
+              id: arguments.length,
+              name: "eCLIPSE-S",
+              subHeading:
+                "Unmanned Aerial Vehicle (UAV) Operational Management Software System",
+              image: "image/eCLIPSE-S tr (1).png",
+              homeUrl: "https://www.litsonandassociates.com/",
+              homeRedirect: "#",
+              description: "",
+              notificationCount: 3,
+              notificationBreakdown: {
+                warning: 1,
+                danger: 1,
+                safe: 1,
+              },
+              notifications: [
+                {
+                  type: "warning",
+                  message: "Scheduled UAV maintenance window at 16:00 UTC",
+                },
+                {
+                  type: "danger",
+                  message: "Unauthorized UAV detected in restricted airspace",
+                },
+                {
+                  type: "safe",
+                  message: "All systems operating within normal parameters",
+                },
+              ],
+              features: [
+                "Safety & Quality Organisational Management System developed to optimise operational efficiency and includes Operational and Flight Planning",
+                "Risk Management and event tracking",
+                "Crew and technical management, including training and experience tracking",
+                "Platform Airworthiness and Integrity monitoring.",
+                "Comprehensive Maintenance Management, tracking and recording.",
+                "Data to Information management.",
+              ],
+            },
+          ],
+        };
+
+        const screensContainer = document.getElementById("screens-container");
+        const modalContainer = document.getElementById("modal-container");
+        const modalContentDiv = document.getElementById("modal-content");
+        const modalOverlay = document.getElementById("modal-overlay");
+        let openModal = null; // Track the currently open modal
+
+        // Create toast notification
+        function showToast(title, message, type = 'info') {
+          const toastContainer = document.getElementById('toast-container');
+          const toast = document.createElement('div');
+          toast.classList.add('toast');
+          
+          let iconClass = '🔔';
+          if (type === 'warning') iconClass = '⚠️';
+          if (type === 'danger') iconClass = '⛔';
+          if (type === 'success') iconClass = '✅';
+          
+          toast.innerHTML = `
+            <div class="toast-icon">${iconClass}</div>
+            <div class="toast-content">
+              <div class="toast-title">${title}</div>
+              <div class="toast-message">${message}</div>
+            </div>
+            <div class="toast-close" onclick="this.parentElement.remove()">×</div>
+          `;
+          
+          toastContainer.appendChild(toast);
+          
+          // Show with animation
+          setTimeout(() => {
+            toast.classList.add('show');
+          }, 10);
+          
+          // Auto remove after 5 seconds
+          setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+              toast.remove();
+            }, 500);
+          }, 5000);
+        }
+
+        screenData.screens.forEach((screen, index) => {
+          const screenDiv = document.createElement("div");
+          screenDiv.classList.add("blackout");
+          screenDiv.id = `screen_${index + 1}`;
+          screenDiv.setAttribute("data-aos", "fade-in");
+          screenDiv.setAttribute("data-aos-delay", (index * 100).toString());
+          screenDiv.style.background = `url('${screen.image}') no-repeat center center`;
+
+          // Add notification badge if count exists
+          if (screen.notificationCount && screen.notificationCount > 0) {
+            const badge = document.createElement("span");
+            badge.classList.add("notification-badge");
+            badge.innerText = screen.notificationCount;
+            screenDiv.appendChild(badge);
+          }
+
+          screenDiv.addEventListener("click", () => {
+            if (openModal === null) {
+              openModal = modalContainer;
+              const requestADemo = "https://www.litsonandassociates.com/contact/esystems-contact/";
+              
+              // Use GSAP for smoother animation
+              gsap.to(modalOverlay, {
+                autoAlpha: 1,
+                duration: 0.3,
+                ease: "power2.inOut"
+              });
+              
+              modalContainer.classList.add("show");
+              
+              modalContentDiv.innerHTML = `
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <div class="modal-header modal-title">
+                  <h2>${screen.name}</h2>
+                  <div class="notification-types flex gap-2 mt-2 text-sm font-medium">
+                    ${screen.notificationBreakdown?.warning ? 
+                      `<span class="text-amber-500" onclick="showNotificationDetails('${screen.name}', 'warning')">⚠️ ${screen.notificationBreakdown.warning}</span>` : ""}
+                    ${screen.notificationBreakdown?.danger ? 
+                      `<span class="text-red-500" onclick="showNotificationDetails('${screen.name}', 'danger')">⛔ ${screen.notificationBreakdown.danger}</span>` : ""}
+                    ${screen.notificationBreakdown?.safe ? 
+                      `<span class="text-green-500" onclick="showNotificationDetails('${screen.name}', 'safe')">✅ ${screen.notificationBreakdown.safe}</span>` : ""}
+                  </div>
+                  <span class="text-sm text-gray-400">Systems Development</span>
+                </div>
+
+                <div class="modal-subheading text-lg font-semibold">${screen.subHeading}</div>
+                <div class="modal-features modal-description">
+                  <ul class="list-disc pl-5">
+                    ${screen.features.map((feature) => `<li>${feature}</li>`).join("")}
+                  </ul>
+                </div>
+
+                <div class="modal-buttons">
+                  <a href="${screen.homeRedirect}" target="_blank" rel="noopener noreferrer" 
+                    class="login-btn transition-all hover:shadow-lg">Login to ${screen.name}</a>
+                  <a href="${requestADemo}" target="_blank" rel="noopener noreferrer" 
+                    class="reqdemo hover:shadow-lg">Request for demonstration</a>
+                </div>
+              `;
+              
+              // Animate modal content with GSAP
+              gsap.fromTo(modalContentDiv, 
+                { 
+                  scale: 0.8, 
+                  y: -30, 
+                  opacity: 0 
+                },
+                { 
+                  scale: 1, 
+                  y: 0, 
+                  opacity: 1, 
+                  duration: 0.5, 
+                  ease: "back.out(1.7)",
+                  onComplete: () => {
+                    modalContentDiv.classList.add("show");
+                  }
+                }
+              );
+              
+              // Show notification toast
+              showToast(`${screen.name} Selected`, `${screen.subHeading} - ${screen.notificationCount || 0} notifications`, 'info');
+            }
+          });
+
+          screensContainer.appendChild(screenDiv);
+          
+          // Animate the screen elements in with GSAP
+          gsap.fromTo(screenDiv, 
+            { 
+              opacity: 0, 
+              y: 20 
+            },
+            { 
+              opacity: 1, 
+              y: 0, 
+              duration: 0.7, 
+              delay: index * 0.1,
+              ease: "power2.out" 
+            }
+          );
+        });
+
+        // Example: Get total notifications from all screens
+        const totalNotificationCount = screenData.screens.reduce(
+          (acc, screen) => {
+            return acc + (screen.notificationCount || 0);
+          },
+          0
+        );
+
+        // Add announcement badge
+        const announcement = document.getElementById("announcement_board");
+
+        if (totalNotificationCount > 0 && announcement) {
+          const announcementBadge = document.createElement("span");
+          announcementBadge.classList.add("notification-badge");
+          announcementBadge.innerText = totalNotificationCount;
+          announcement.appendChild(announcementBadge);
+          
+          // Make announcement clickable to show all notifications
+          announcement.addEventListener("click", function() {
+            Swal.fire({
+              title: 'System Notifications',
+              html: `
+                <div class="text-left">
+                  <p class="mb-4">You have <strong>${totalNotificationCount}</strong> total notifications across all systems.</p>
+                  <div class="notification-summary mt-2">
+                    ${screenData.screens.map(screen => 
+                      screen.notificationCount ? 
+                      `<div class="flex justify-between border-b py-2">
+                        <span>${screen.name}</span>
+                        <span class="font-bold">${screen.notificationCount}</span>
+                      </div>` : ''
+                    ).join('')}
+                  </div>
+                </div>
+              `,
+              icon: 'info',
+              confirmButtonText: 'View All',
+              showCancelButton: true,
+              cancelButtonText: 'Close',
+              confirmButtonColor: '#04187c',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Logic to show all notifications
+                showAllNotifications();
+              }
+            });
+          });
+        }
+        
+        // Function to show notification details with SweetAlert2
+        window.showNotificationDetails = function(system, type) {
+          let title = '';
+          let color = '';
+          
+          if (type === 'warning') {
+            title = 'Warning Notifications';
+            color = '#f59e0b'; // amber
+          } else if (type === 'danger') {
+            title = 'Critical Notifications';
+            color = '#ef4444'; // red
+          } else if (type === 'safe') {
+            title = 'System OK Notifications';
+            color = '#10b981'; // green
+          }
+          
+          Swal.fire({
+            title: title,
+            html: `<div class="text-left p-4">
+              <p class="mb-4">The following ${type} notifications have been detected for <strong>${system}</strong>:</p>
+              <ul class="list-disc pl-5">
+                <li>Item requires your attention</li>
+                <li>Action required within system</li>
+                <li>Check system for more details</li>
+              </ul>
+            </div>`,
+            icon: type === 'safe' ? 'success' : (type === 'warning' ? 'warning' : 'error'),
+            confirmButtonText: 'Acknowledge',
+            confirmButtonColor: color,
+          });
+        };
+        
+        // Function to show all notifications
+        window.showAllNotifications = function() {
+          // This would typically connect to a real API endpoint
+          // For demo purposes, we'll just show a mockup
+          
+          Swal.fire({
+            title: 'All System Notifications',
+            width: '800px',
+            html: `<div class="text-left overflow-auto" style="max-height: 400px;">
+              ${screenData.screens.map(screen => 
+                screen.notificationCount ? 
+                `<div class="mb-4">
+                  <h3 class="text-lg font-bold mb-2">${screen.name} (${screen.notificationCount})</h3>
+                  <div class="pl-4 border-l-4 border-gray-300">
+                    ${screen.notificationBreakdown?.warning ? 
+                      `<div class="mb-2 p-2 bg-yellow-50 rounded">
+                        <span class="font-bold text-amber-500">⚠️ Warning (${screen.notificationBreakdown.warning})</span>
+                        <p class="text-sm">System warnings require review</p>
+                      </div>` : ''}
+                    ${screen.notificationBreakdown?.danger ? 
+                      `<div class="mb-2 p-2 bg-red-50 rounded">
+                        <span class="font-bold text-red-500">⛔ Critical (${screen.notificationBreakdown.danger})</span>
+                        <p class="text-sm">Critical issues need immediate attention</p>
+                      </div>` : ''}
+                    ${screen.notificationBreakdown?.safe ? 
+                      `<div class="mb-2 p-2 bg-green-50 rounded">
+                        <span class="font-bold text-green-500">✅ OK (${screen.notificationBreakdown.safe})</span>
+                        <p class="text-sm">Systems operating normally</p>
+                      </div>` : ''}
+                  </div>
+                </div>` : ''
+              ).join('')}
+            </div>`,
+            confirmButtonText: 'Close',
+            confirmButtonColor: '#04187c',
+          });
+        };
+
+        // Function to close the currently open modal with animation
+        window.closeModal = function() {
+          if (openModal) {
+            // Animate out with GSAP
+            gsap.to(modalContentDiv, {
+              scale: 0.9,
+              y: -20,
+              opacity: 0,
+              duration: 0.3,
+              ease: "power2.in",
+              onComplete: () => {
+                modalContentDiv.classList.remove("show");
+                gsap.to(modalOverlay, {
+                  autoAlpha: 0,
+                  duration: 0.3,
+                  ease: "power2.inOut",
+                  onComplete: () => {
+                    modalOverlay.classList.remove("show");
+                    modalContainer.classList.remove("show");
+                    modalContentDiv.innerHTML = ""; // Clear modal content
+                    openModal = null;
+                  }
+                });
+              }
+            });
+          }
+        };
+
+        // Close modal when clicking outside
+        modalOverlay.addEventListener("click", closeModal);
+
+        // Prevent clicks inside the modal from closing it
+        modalContainer.addEventListener("click", function(event) {
+          event.stopPropagation();
+        });
+        
+        // Example function to periodically show notifications
+        function scheduleRandomNotification() {
+          const systems = screenData.screens.map(s => s.name);
+          const types = ['warning', 'danger', 'safe'];
+          
+          const randomInterval = 15000 + Math.floor(Math.random() * 45000); // Between 15-60 seconds
+          
+          setTimeout(() => {
+            if (Math.random() > 0.3) { // 70% chance to show notification
+              const system = systems[Math.floor(Math.random() * systems.length)];
+              const type = types[Math.floor(Math.random() * types.length)];
+              const messages = {
+                warning: ['System update pending', 'Parameter approaching threshold', 'Scheduled maintenance required'],
+                danger: ['Connection error detected', 'Critical system update required', 'Security alert triggered'],
+                safe: ['All checks passed', 'System performance optimal', 'Backup completed successfully']
+              };
+              
+              const message = messages[type][Math.floor(Math.random() * messages[type].length)];
+              
+              showToast(`${system} Alert`, message, type);
+            }
+            
+            scheduleRandomNotification(); // Schedule the next one
+          }, randomInterval);
+        }
+        
+        // Start the notification scheduler after a brief delay
+        setTimeout(scheduleRandomNotification, 10000);
+      });
+    </script>
+  </body>
+</html>

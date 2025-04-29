@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Flight-Deck</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Optional: Link to your CSS file if you have other non-Tailwind styles -->
+    <!-- <link rel="stylesheet" href="style.css" /> -->
+    <!-- GSAP, SweetAlert2 (Keep if needed for other interactions, though not used in this basic form) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.js"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap");
+
+      /* Keep the background blur styles */
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        position: relative; /* Needed for pseudo-element and centering */
+        font-family: "Inter", sans-serif;
+        background-color: #333; /* Fallback */
+        /* Add flexbox to center the login container */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("/Assets/image/Flight deck 1 (2).svg") no-repeat center center;
+        background-size: cover;
+        filter: blur(15px);
+        z-index: 1; /* Keep behind content */
+        transform: scale(1.05);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-200"> <!-- Added bg-gray-200 as a fallback if image fails -->
+
+    <!-- Login Container with Tailwind Classes -->
+    <div class="bg-white/30 backdrop-blur-lg p-8 rounded-xl border border-white/20 shadow-lg w-full max-w-sm z-10 relative">
+        <!-- Added relative and z-10 -->
+      <div class="flex justify-center mb-6">
+        <img src="/Assets/image/esystems-latest-123.png" alt="Flight-Deck Logo" class="h-25" />
+      </div>
+     
+
+      <form id="login-form" action="/process-login" method="post">
+        <!-- Username Field -->
+        <div class="mb-4">
+          <label for="username" class="block text-sm font-bold text-white mb-2">
+            Username or Email:
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            autocomplete="username"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+            placeholder="your.email@example.com"
+          />
+        </div>
+
+        <!-- Password Field -->
+        <div class="mb-6">
+          <label for="password" class="block text-sm font-bold text-white mb-2">
+            Password:
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="current-password"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out"
+            placeholder="••••••••"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+        >
+          Log In
+        </button>
+
+        <!-- Links -->
+        <div class="text-center mt-6 text-sm">
+          <a href="#" class="font-medium text-blue-400 hover:text-blue-300 hover:underline">
+            Forgot Password?
+          </a>
+          <span class="text-gray-300 mx-1">|</span>
+          <a href="#" class="font-medium text-blue-400 hover:text-blue-300 hover:underline">
+            Sign Up
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <script type="module" src="/Assets/js/users.js"></script>
+    <script type="module" src="/Assets/js/login.js"></script>
+  </body>
+</html>
